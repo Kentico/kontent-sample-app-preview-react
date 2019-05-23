@@ -5,11 +5,14 @@ import { App } from './App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router } from 'react-router-dom';
 import {Authenticate} from "./components/auth/Authenticate";
+import {AppContextComponent} from "./context/AppContext";
 
 ReactDOM.render(
   <Router>
     <Authenticate>
-      <App />
+      <AppContextComponent>
+        <App />
+      </AppContextComponent>
     </Authenticate>
   </Router>
   , document.getElementById('root'));

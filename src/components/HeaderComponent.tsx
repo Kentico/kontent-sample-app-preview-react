@@ -5,6 +5,7 @@ import {
   login,
   logout,
 } from '../authorization/authentication';
+import {AppContextConsumer} from "../context/AppContext";
 
 export class HeaderComponent extends React.PureComponent {
   render() {
