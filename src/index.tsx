@@ -4,10 +4,13 @@ import './index.css';
 import { App } from './App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router } from 'react-router-dom';
+import {Authenticate} from "./components/auth/Authenticate";
 
 ReactDOM.render(
   <Router>
-    <App />
+    <Authenticate>
+      <App />
+    </Authenticate>
   </Router>
   , document.getElementById('root'));
 
