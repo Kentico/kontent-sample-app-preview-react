@@ -37,7 +37,7 @@ export function handleAuthentication(): void {
       setSession(authResult);
     }
     else if (err) {
-      if (err.error === 'login_required') {
+      if (err.error === 'login_required' || err.error === 'consent_required') {
         localStorage.setItem(silentLoginKey, err.error);
         login();
       } else {
