@@ -1,12 +1,14 @@
 import React from 'react';
-import { LoadingStatus } from "../enums/LoadingStatus";
-import { getAllArticles, getProductsPage } from "../repositories/contentItemRepository";
-import { ArticleExampleContentType } from "../models/Article";
-import { ProductExampleContentType } from "../models/Product";
-import { clearInterval, setInterval } from "timers";
+import { clearInterval, setInterval } from 'timers';
+import { LoadingStatus } from '../enums/LoadingStatus';
+import { PollingStatus } from '../enums/PollingStatus';
+import { ArticleExampleContentType } from '../models/Article';
+import { ProductExampleContentType } from '../models/Product';
+import { getAllArticles, getProductsPage } from '../repositories/contentItemRepository';
 
 interface IAppContextState {
   readonly dataLoadingStatus: LoadingStatus;
+  readonly dataPollingStatus: PollingStatus;
   readonly previewApiKey: string;
   readonly previewApiKeyLoadingStatus: LoadingStatus;
   readonly projectId: string;
@@ -30,6 +32,7 @@ export interface IAppContext extends IAppContextState, IAppContextProps {
 
 const defaultAppContext: IAppContext = {
   dataLoadingStatus: LoadingStatus.NotLoaded,
+  dataPollingStatus: PollingStatus.Stopped,
   previewApiKey: '',
   previewApiKeyLoadingStatus: LoadingStatus.NotLoaded,
   projectId: '',
@@ -45,14 +48,15 @@ const defaultAppContext: IAppContext = {
   setPreviewApiKeyLoadingStatus: () => undefined,
 };
 
-const context = React.createContext<IAppContext>(defaultAppContext);
-const AppContextProvider = context.Provider;
-export const AppContextConsumer = context.Consumer;
+export const AppContext = React.createContext<IAppContext>(defaultAppContext);
+const AppContextProvider = AppContext.Provider;
+export const AppContextConsumer = AppContext.Consumer;
 
-export class AppContext extends React.PureComponent<{}, IAppContextState> {
+export class AppContextComponent extends React.PureComponent<{}, IAppContextState> {
 
   readonly state = {
     dataLoadingStatus: LoadingStatus.NotLoaded,
+    dataPollingStatus: PollingStatus.Stopped,
     previewApiKey: '',
     previewApiKeyLoadingStatus: LoadingStatus.NotLoaded,
     projectId: '',
@@ -68,7 +72,12 @@ export class AppContext extends React.PureComponent<{}, IAppContextState> {
       clearInterval(this._dataPollingInterval);
     }
 
-    this._dataPollingInterval = setInterval(callback, 3000);
+    this._dataPollingInterval = setInterval(async () => {
+      this.setState({ dataPollingStatus: PollingStatus.Fetching });
+      await callback();
+      this.setState({ dataPollingStatus: PollingStatus.Waiting });
+    }, 3000);
+    this.setState({ dataPollingStatus: PollingStatus.Waiting });
   };
 
   setProjectId = (projectId: string) => {
@@ -76,7 +85,7 @@ export class AppContext extends React.PureComponent<{}, IAppContextState> {
   };
 
   setLoadingStatus = (loadingStatus: LoadingStatus) => {
-    this.setState({ dataLoadingStatus: loadingStatus })
+    this.setState({ dataLoadingStatus: loadingStatus });
   };
 
   setProjectIdLoadingStatus = (projectIdLoadingStatus: LoadingStatus) => {
@@ -119,6 +128,7 @@ export class AppContext extends React.PureComponent<{}, IAppContextState> {
       articles,
       projectId,
       dataLoadingStatus,
+      dataPollingStatus,
       projectIdLoadingStatus,
       previewApiKey,
       previewApiKeyLoadingStatus,
@@ -126,6 +136,7 @@ export class AppContext extends React.PureComponent<{}, IAppContextState> {
 
     const contextValue: IAppContext = {
       dataLoadingStatus,
+      dataPollingStatus,
       previewApiKey,
       previewApiKeyLoadingStatus,
       projectId,
