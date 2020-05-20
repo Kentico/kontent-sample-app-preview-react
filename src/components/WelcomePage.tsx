@@ -1,7 +1,7 @@
 import React from 'react';
 import { AppContextConsumer } from '../context/AppContext';
 import { PageContent } from './PageContent';
-import { ArticleExampleContentType } from "../models/Article";
+import { ArticleExampleContentType } from '../models/Article';
 
 interface IWelcomePageProps {
   readonly article: ArticleExampleContentType;
@@ -17,8 +17,10 @@ class WelcomePage extends React.PureComponent<IWelcomePageProps> {
     const { article } = this.props;
     if (article) {
       return (
-        <PageContent title={article.title.value}>
-          <div dangerouslySetInnerHTML={{ __html: article.body.resolveHtml() }} />
+        <PageContent
+          title={article.title.value}
+        >
+          <div dangerouslySetInnerHTML={{ __html: article.body.resolveHtml() }}/>
         </PageContent>
       );
     }
@@ -32,9 +34,9 @@ const WelcomePageConnected = () => (
     {appContext => (
       <WelcomePage
         article={appContext.articles[0]}
-        init={appContext.loadWelcomePage} />
+        init={appContext.loadWelcomePage}/>
     )}
   </AppContextConsumer>
 );
 
-export { WelcomePageConnected as WelcomePage }
+export { WelcomePageConnected as WelcomePage };

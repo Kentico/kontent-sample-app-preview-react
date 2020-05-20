@@ -4,6 +4,9 @@
 	flex-wrap: wrap;
 	margin-left: -12px;
 	margin-right: -12px;
+
+	/*max-height: 350px;*/
+	/*overflow-y: scroll;*/
 }
 
 .products-page--has-single-product {

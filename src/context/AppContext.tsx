@@ -76,6 +76,8 @@ export class AppContextComponent extends React.PureComponent<{}, IAppContextStat
       clearInterval(this._dataPollingInterval);
     }
 
+    return;
+
     this._dataPollingInterval = setInterval(async () => {
       this.setState({ dataPollingStatus: PollingStatus.Fetching });
       await callback();

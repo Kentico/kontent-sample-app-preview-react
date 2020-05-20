@@ -23,9 +23,13 @@ class ProductDetailsPage extends React.PureComponent<IProductDetailsPage> {
     if (product) {
       const pictureUrl = product.image.value[0] ? product.image.value[0].url : '';
       return (
-        <PageContent title={product.name.value}>
+        <PageContent
+          itemId={product.system.id}
+          title={product.name.value}
+        >
           {pictureUrl && (
             <img
+              data-kk-element-codename="image"
               className="product-details__image"
               alt={product.name.value}
               src={product.image.value[0] ? product.image.value[0].url : ''}
@@ -33,6 +37,7 @@ class ProductDetailsPage extends React.PureComponent<IProductDetailsPage> {
           )}
 
           <div
+            data-kk-element-codename="description"
             className="product-details__description"
             dangerouslySetInnerHTML={{ __html: product.description.resolveHtml() }}
           />

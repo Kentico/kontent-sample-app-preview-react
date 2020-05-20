@@ -14,16 +14,18 @@ const ProductCardPlaceholder: React.FunctionComponent<IProductCardPlaceholderPro
   <>
     <div className="product-card__thumbnail-wrapper">
       <img
+        data-kk-element-codename="image"
         className="product-card__thumbnail"
         src={imageSource}
         alt="product thumbnail"
       />
     </div>
-    {title ? title : 'Untitled content item'}
+    <span data-kk-element-codename="name">{title ? title : 'Untitled content item'}</span>
   </>
 );
 
 interface IProductCardProps {
+  readonly itemId: string;
   readonly projectId: string;
   readonly productId: string;
   readonly title: string;
@@ -31,10 +33,10 @@ interface IProductCardProps {
 }
 
 export const ProductCard: React.FunctionComponent<IProductCardProps> =
-  ({ projectId, productId, pictureUrl, title }) => {
+  ({ projectId, itemId, productId, pictureUrl, title }) => {
     const imageSource = pictureUrl ? pictureUrl : productImagePlaceholderUrl;
     return (
-      <div className="product-card">
+      <div data-kk-item-id={itemId} className="product-card">
         {productId ? (
             <Link to={buildPath<ProductDetailsRouteParams>(ProductDetailsRoute, { projectId, productUrlSlug: productId })}>
               <ProductCardPlaceholder imageSource={imageSource} title={title}/>
