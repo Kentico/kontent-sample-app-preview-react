@@ -4,8 +4,9 @@ import { LoadingStatus } from '../enums/LoadingStatus';
 import { PollingStatus } from '../enums/PollingStatus';
 import { ArticleExampleContentType } from '../models/Article';
 import { ProductExampleContentType } from '../models/Product';
-import { getAllArticles, getProductsPage, getProductDetailsByUrlSlug } from '../repositories/contentItemRepository';
+import { getAllArticles, getProductDetailsByUrlSlug, getProductsPage } from '../repositories/contentItemRepository';
 import KontentSmartLink from '@kentico/kontent-smart-link';
+import PluginWrapper from '@kentico/kontent-smart-link';
 import '@kentico/kontent-smart-link/dist/kontent-smart-link.styles.css';
 
 interface IAppContextState {
@@ -16,7 +17,7 @@ interface IAppContextState {
   readonly projectId: string;
   readonly projectIdLoadingStatus: LoadingStatus;
   readonly articles: Array<ArticleExampleContentType>;
-  readonly productsByUrlSlug: {[key: string]: ProductExampleContentType};
+  readonly productsByUrlSlug: { [key: string]: ProductExampleContentType };
 }
 
 interface IAppContextProps {
@@ -71,16 +72,21 @@ export class AppContextComponent extends React.PureComponent<{}, IAppContextStat
     productsByUrlSlug: {},
   };
 
+  private static smartLinkSDK: PluginWrapper | null = null;
   private _dataPollingInterval: NodeJS.Timer | null = null;
 
   componentDidMount() {
-    KontentSmartLink.initializeOnLoad({
+    AppContextComponent.smartLinkSDK = KontentSmartLink.initialize({
       projectId: '220af705-8621-00d0-2f33-97101edbf600',
       languageCodename: 'default',
       queryParam: 'preview',
-    }).then(() => {
-      console.log('Kontent Smart Link SDK initialized');
     });
+  }
+
+  componentWillUnmount(): void {
+    if (AppContextComponent.smartLinkSDK) {
+      AppContextComponent.smartLinkSDK.destroy();
+    }
   }
 
   private _startDataPolling = (callback: () => void): void => {
@@ -130,9 +136,10 @@ export class AppContextComponent extends React.PureComponent<{}, IAppContextStat
     const productsPage = await getProductsPage(this.state.projectId, this.state.previewApiKey);
     if (productsPage && productsPage[0]) {
       const newProducts = productsPage[0].productList.value as Array<ProductExampleContentType>;
-      this.setState((state) => ({ productsByUrlSlug: newProducts
-          .reduce((byId, product: ProductExampleContentType) => ({...byId, [product.url.value]: product}),
-            Object.assign({}, state.productsByUrlSlug))
+      this.setState((state) => ({
+        productsByUrlSlug: newProducts
+          .reduce((byId, product: ProductExampleContentType) => ({ ...byId, [product.url.value]: product }),
+            Object.assign({}, state.productsByUrlSlug)),
       }));
     }
   };
@@ -145,7 +152,12 @@ export class AppContextComponent extends React.PureComponent<{}, IAppContextStat
   private _loadProductData = async (productUrlSlug: string) => {
     const product = await getProductDetailsByUrlSlug(this.state.projectId, this.state.previewApiKey, productUrlSlug);
     if (product) {
-      this.setState((state) => ({ productsByUrlSlug: ({...Object.assign({}, state.productsByUrlSlug), [product.url.value]: product})}));
+      this.setState((state) => ({
+        productsByUrlSlug: ({
+          ...Object.assign({}, state.productsByUrlSlug),
+          [product.url.value]: product,
+        }),
+      }));
     }
   };
 
