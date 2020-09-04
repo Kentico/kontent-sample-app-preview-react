@@ -5,6 +5,7 @@
   "homepage": "https://kentico.github.io/kontent-sample-app-preview-react/",
   "dependencies": {
     "@kentico/kontent-delivery": "^8.2.0",
+    "@kentico/kontent-smart-link": "^1.1.0",
     "@types/auth0-js": "^9.10.2",
     "@types/classnames": "^2.2.8",
     "@types/jest": "^24.0.13",

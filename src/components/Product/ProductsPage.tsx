@@ -21,7 +21,9 @@ class ProductsPage extends React.PureComponent<IProductsPageProps> {
     const { projectId, products } = this.props;
     const isSingleProduct = products.length === 1;
     return (
-      <PageContent title="Products">
+      <PageContent
+        title="Products"
+      >
         <div className={classNames("products-page", {
           "products-page--has-single-product": isSingleProduct,
         })}>

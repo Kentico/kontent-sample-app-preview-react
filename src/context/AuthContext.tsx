@@ -53,7 +53,7 @@ class AuthContext extends React.Component<RouteComponentProps, IAuthContextState
       expiresAt: accessToken.expiresAt,
       isLoggedIn: true,
     });
-    this.props.history.push(redirectUri);
+    this.props.history.push(redirectUri + "?preview");
   };
 
   onFailedLogin = () => {

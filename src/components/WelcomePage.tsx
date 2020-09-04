@@ -17,8 +17,14 @@ class WelcomePage extends React.PureComponent<IWelcomePageProps> {
     const { article } = this.props;
     if (article) {
       return (
-        <PageContent title={article.title.value}>
-          <div dangerouslySetInnerHTML={{ __html: article.body.resolveHtml() }} />
+        <PageContent
+          itemId={article.system.id}
+          title={article.title.value}
+        >
+          <div
+            data-kontent-element-codename='body'
+            dangerouslySetInnerHTML={{ __html: article.body.resolveHtml() }}
+          />
         </PageContent>
       );
     }

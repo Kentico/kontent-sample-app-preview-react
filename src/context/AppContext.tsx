@@ -5,6 +5,8 @@ import { PollingStatus } from '../enums/PollingStatus';
 import { ArticleExampleContentType } from '../models/Article';
 import { ProductExampleContentType } from '../models/Product';
 import { getAllArticles, getProductsPage, getProductDetailsByUrlSlug } from '../repositories/contentItemRepository';
+import KontentSmartLink from '@kentico/kontent-smart-link';
+import '@kentico/kontent-smart-link/dist/kontent-smart-link.styles.css';
 
 interface IAppContextState {
   readonly dataLoadingStatus: LoadingStatus;
@@ -70,6 +72,16 @@ export class AppContextComponent extends React.PureComponent<{}, IAppContextStat
   };
 
   private _dataPollingInterval: NodeJS.Timer | null = null;
+
+  componentDidMount() {
+    KontentSmartLink.initializeOnLoad({
+      projectId: '220af705-8621-00d0-2f33-97101edbf600',
+      languageCodename: 'default',
+      queryParam: 'preview',
+    }).then(() => {
+      console.log('Kontent Smart Link SDK initialized');
+    });
+  }
 
   private _startDataPolling = (callback: () => void): void => {
     if (this._dataPollingInterval !== null) {
